@@ -1,0 +1,6 @@
+__pycache__/
+build
+dist
+widgets/__pycache__/
+buildCmd.txt
+userValues.json
