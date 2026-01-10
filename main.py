@@ -1,4 +1,5 @@
 import sys
+import os
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -11,6 +12,7 @@ import json
 
 from globals import *
 from editMemo import *
+from settings import *
 
 from widgets.memoBrowser import *
 
@@ -30,9 +32,15 @@ class main(QMainWindow, form_class):
         # self.setWindowFlags(Qt.FramelessWindowHint)
         # self.setAttribute(Qt.WA_TranslucentBackground)
 
+        # ==================================================
+
+        self.dataLocation = self.getExeDir()
+
         self.readUserValues()
 
         self.setGeometry(self.jsonData["geometry"]["x"], self.jsonData["geometry"]["y"], self.jsonData["geometry"]["width"], self.jsonData["geometry"]["height"])
+
+        # ==================================================
 
         centralWidget = QWidget(self)
         self.setCentralWidget(centralWidget)
@@ -50,6 +58,7 @@ class main(QMainWindow, form_class):
         box.setLayout(hLayout)
         self.yearBox = QComboBox()
         self.monthBox = QComboBox()
+        self.settingBtn = QPushButton("⚙️", self)
 
         for i in range(1970, 2101):
             self.yearBox.addItem(str(i))
@@ -60,6 +69,7 @@ class main(QMainWindow, form_class):
         self.monthBox.setCurrentText(str(today.month))
         self.yearBox.currentTextChanged.connect(self.showCalendar)
         self.monthBox.currentTextChanged.connect(self.showCalendar)
+        self.settingBtn.clicked.connect(self.showSettings)
 
         leftWidget = QWidget()
         rightWidget = QWidget()
@@ -67,11 +77,13 @@ class main(QMainWindow, form_class):
         hLayout.addWidget(leftWidget)
         hLayout.addWidget(self.yearBox)
         hLayout.addWidget(self.monthBox)
+        hLayout.addWidget(self.settingBtn)
         hLayout.addWidget(rightWidget)
-        hLayout.setStretch(0, 2)
-        hLayout.setStretch(1, 1)
-        hLayout.setStretch(2, 1)
-        hLayout.setStretch(3, 2)
+        hLayout.setStretch(0, 3)
+        hLayout.setStretch(1, 2)
+        hLayout.setStretch(2, 2)
+        hLayout.setStretch(3, 1)
+        hLayout.setStretch(4, 3)
 
         leftButton = QPushButton("<", self)
         rightButton = QPushButton(">", self)
@@ -86,6 +98,21 @@ class main(QMainWindow, form_class):
         self.horizontalLayout.setStretch(2, 1)
 
         self.showCalendar()
+
+# ====================================================================================================
+
+    def getExeDir(self):
+        if getattr(sys, "frozen", False):
+            path = sys.executable
+        else:
+            path = os.path.abspath(__file__)
+
+        dirName = os.path.dirname(path)
+        return dirName
+
+    def showSettings(self):
+        self.settings = settings()
+        self.settings.show()
 
     def upMonth(self):
         currentMonth = int(self.monthBox.currentText())

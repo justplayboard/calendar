@@ -7,7 +7,7 @@ a = Analysis(
     binaries=[],
     datas=[
         ('userValues.json', '.'),
-        ('main.ui', '.'), ('editMemo.ui', '.'),
+        ('main.ui', '.'), ('editMemo.ui', '.'), ('settings.ui', '.'),
     ],
     hiddenimports=[],
     hookspath=[],
