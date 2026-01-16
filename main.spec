@@ -8,6 +8,7 @@ a = Analysis(
     datas=[
         ('userValues.json', '.'),
         ('main.ui', '.'), ('editMemo.ui', '.'), ('settings.ui', '.'),
+        ('./icon/icons8-달력-flat-96.ico', './icon'),
     ],
     hiddenimports=[],
     hookspath=[],
@@ -38,4 +39,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon='./icon/icons8-달력-flat-96.ico',
 )

@@ -270,13 +270,26 @@ class main(QMainWindow, form_class):
         if e.key() == Qt.Key_Escape:
             self.close()
 
+    def moveEvent(self, e):
+        if self.isVisible():
+            self.jsonData["geometry"]["x"] = self.geometry().x()
+            self.jsonData["geometry"]["y"] = self.geometry().y()
+            self.writeUserValues()
+
+    def resizeEvent(self, e):
+        if self.isVisible():
+            self.jsonData["geometry"]["width"] = self.geometry().width()
+            self.jsonData["geometry"]["height"] = self.geometry().height()
+            self.writeUserValues()
+
     def closeEvent(self, e):
         self.jsonData["geometry"]["x"] = self.geometry().x()
         self.jsonData["geometry"]["y"] = self.geometry().y()
         self.jsonData["geometry"]["width"] = self.geometry().width()
         self.jsonData["geometry"]["height"] = self.geometry().height()
         self.writeUserValues()
-        app.quit()
+        e.ignore()
+        self.hide()
 
     # 마우스 이벤트 설정
     def mousePressEvent(self, e):
@@ -330,8 +343,64 @@ class main(QMainWindow, form_class):
 
 # ====================================================================================================
 
+class Tray:
+    Icon = resource_path(iconDirPath + "icons8-달력-flat-96.ico")
+
+    def __init__(self):
+        self.app = QApplication(sys.argv)
+        self.app.setWindowIcon(QIcon(self.Icon))
+
+        self.window = main()
+
+        self.tray = QSystemTrayIcon(QIcon(self.Icon))
+        self.tray.setToolTip(self.getExeName())
+        self.tray.show()
+
+        openAction = QAction("열기")
+        openAction.triggered.connect(self.showWindow)
+
+        quitAction = QAction("종료")
+        quitAction.triggered.connect(self.exitApp)
+
+        menu = QMenu()
+        menu.addAction(openAction)
+        menu.addSeparator()
+        menu.addAction(quitAction)
+
+        self.tray.setContextMenu(menu)
+
+        self.tray.activated.connect(self.trayActivated)
+
+        self.showWindow()
+
+        sys.exit(self.app.exec_())
+
+    def showWindow(self):
+        if self.window.isMinimized():
+            self.window.showNormal()
+        elif not self.window.isVisible():
+            self.window.show()
+
+        self.window.raise_()
+        self.window.activateWindow()
+
+    def trayActivated(self, reason):
+        if reason == QSystemTrayIcon.Trigger:
+            self.showWindow()
+
+    def exitApp(self):
+        self.tray.hide()
+        self.app.quit()
+
+    def getExeName(self):
+        if getattr(sys, "frozen", False):
+            path = sys.executable
+        else:
+            path = os.path.abspath(__file__)
+
+        baseName = os.path.basename(path)
+        name, ext = os.path.splitext(baseName)
+        return name
+
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    myWindow = main()
-    myWindow.show()
-    app.exec_()
+    Tray()
