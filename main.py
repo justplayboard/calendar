@@ -349,6 +349,7 @@ class Tray:
     def __init__(self):
         self.app = QApplication(sys.argv)
         self.app.setWindowIcon(QIcon(self.Icon))
+        self.app.setQuitOnLastWindowClosed(False)
 
         self.window = main()
 
