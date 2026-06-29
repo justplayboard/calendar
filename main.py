@@ -288,8 +288,6 @@ class main(QMainWindow, form_class):
         self.jsonData["geometry"]["width"] = self.geometry().width()
         self.jsonData["geometry"]["height"] = self.geometry().height()
         self.writeUserValues()
-        e.ignore()
-        self.hide()
 
     # 마우스 이벤트 설정
     def mousePressEvent(self, e):
