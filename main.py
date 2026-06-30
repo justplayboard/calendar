@@ -58,6 +58,7 @@ class main(QMainWindow, form_class):
         box.setLayout(hLayout)
         self.yearBox = QComboBox()
         self.monthBox = QComboBox()
+        self.resetBtn = QPushButton("🔄️", self)
         self.settingBtn = QPushButton("⚙️", self)
 
         for i in range(1970, 2101):
@@ -69,6 +70,7 @@ class main(QMainWindow, form_class):
         self.monthBox.setCurrentText(str(today.month))
         self.yearBox.currentTextChanged.connect(self.showCalendar)
         self.monthBox.currentTextChanged.connect(self.showCalendar)
+        self.resetBtn.clicked.connect(self.changeCurrentDate)
         self.settingBtn.clicked.connect(self.showSettings)
 
         leftWidget = QWidget()
@@ -77,13 +79,15 @@ class main(QMainWindow, form_class):
         hLayout.addWidget(leftWidget)
         hLayout.addWidget(self.yearBox)
         hLayout.addWidget(self.monthBox)
-        hLayout.addWidget(self.settingBtn)
+        hLayout.addWidget(self.resetBtn)
         hLayout.addWidget(rightWidget)
+        hLayout.addWidget(self.settingBtn)
         hLayout.setStretch(0, 3)
         hLayout.setStretch(1, 2)
         hLayout.setStretch(2, 2)
         hLayout.setStretch(3, 1)
-        hLayout.setStretch(4, 3)
+        hLayout.setStretch(4, 2)
+        hLayout.setStretch(5, 1)
 
         leftButton = QPushButton("<", self)
         rightButton = QPushButton(">", self)
@@ -109,6 +113,11 @@ class main(QMainWindow, form_class):
 
         dirName = os.path.dirname(path)
         return dirName
+    
+    def changeCurrentDate(self):
+        today = date.today()
+        self.yearBox.setCurrentText(str(today.year))
+        self.monthBox.setCurrentText(str(today.month))
 
     def showSettings(self):
         self.settings = settings()
