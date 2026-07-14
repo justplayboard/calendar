@@ -367,11 +367,15 @@ class Tray:
         openAction = QAction("열기")
         openAction.triggered.connect(self.showWindow)
 
+        closeAction = QAction("닫기")
+        closeAction.triggered.connect(self.closeWindow)
+
         quitAction = QAction("종료")
         quitAction.triggered.connect(self.exitApp)
 
         menu = QMenu()
         menu.addAction(openAction)
+        menu.addAction(closeAction)
         menu.addSeparator()
         menu.addAction(quitAction)
 
@@ -391,6 +395,9 @@ class Tray:
 
         self.window.raise_()
         self.window.activateWindow()
+
+    def closeWindow(self):
+        self.window.close()
 
     def trayActivated(self, reason):
         if reason == QSystemTrayIcon.Trigger:
